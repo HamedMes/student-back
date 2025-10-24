@@ -5,7 +5,7 @@ A Node.js REST API with Express and MongoDB for student registration and authent
 ## Project Structure
 
 ```
-student-auth-api/
+student-api/
 │
 ├── config/
 │   └── db.js                 # Database configuration
@@ -35,8 +35,8 @@ student-auth-api/
 1. **Clone or create the project directory:**
 
 ```bash
-mkdir student-auth-api
-cd student-auth-api
+mkdir student-api
+cd student-api
 ```
 
 2. **Install dependencies:**
@@ -45,19 +45,13 @@ cd student-auth-api
 npm install
 ```
 
-3. **Create environment file:**
-
-```bash
-cp .env.example .env
-```
-
-4. **Edit `.env` file with your configuration:**
+3. **Edit `.env` file with your configuration:**
 
 - Update `MONGO_URI` with your MongoDB connection string
 - Change `JWT_SECRET` to a secure random string
 - Adjust other settings as needed
 
-5. **Make sure MongoDB is running:**
+4. **Make sure MongoDB is running:**
 
 - Local: Start MongoDB service
 - Cloud: Use MongoDB Atlas connection string
@@ -88,13 +82,13 @@ The server will start on `http://localhost:5000` (or the port specified in .env)
 
 ```json
 {
-  "name": "John",
-  "family": "Doe",
+  "name": "name",
+  "family": "family",
   "birthdate": "2000-01-15",
   "nationalCode": "1234567890",
   "mobile": "09123456789",
-  "email": "john.doe@example.com",
-  "universityName": "Tehran University",
+  "email": "email@example.com",
+  "universityName": "Sajjad University",
   "studentNumber": "400123456",
   "fieldOfStudy": "Computer Science",
   "educationalLevel": "Bachelor",
@@ -111,10 +105,10 @@ The server will start on `http://localhost:5000` (or the port specified in .env)
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
   "user": {
     "id": "65f8a1b2c3d4e5f6g7h8i9j0",
-    "name": "John",
-    "family": "Doe",
+    "name": "name",
+    "family": "family",
     "nationalCode": "1234567890",
-    "email": "john.doe@example.com"
+    "email": "email@example.com"
   }
 }
 ```
@@ -142,11 +136,11 @@ The server will start on `http://localhost:5000` (or the port specified in .env)
   "ipAddress": "192.168.1.100",
   "user": {
     "id": "65f8a1b2c3d4e5f6g7h8i9j0",
-    "name": "John",
-    "family": "Doe",
+    "name": "name",
+    "family": "family",
     "nationalCode": "1234567890",
-    "email": "john.doe@example.com",
-    "universityName": "Tehran University",
+    "email": "email@example.com",
+    "universityName": "Sajjad University",
     "studentNumber": "400123456"
   }
 }

@@ -12,7 +12,7 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(getClientIp); // Extract client IP address
+app.use(getClientIp);
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");

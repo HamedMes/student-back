@@ -5,7 +5,7 @@ A Node.js REST API with Express and MongoDB for student registration and authent
 ## Project Structure
 
 ```
-student-api/
+student-auth-api/
 │
 ├── config/
 │   └── db.js                 # Database configuration
@@ -35,8 +35,8 @@ student-api/
 1. **Clone or create the project directory:**
 
 ```bash
-mkdir student-api
-cd student-api
+mkdir student-auth-api
+cd student-auth-api
 ```
 
 2. **Install dependencies:**
@@ -45,13 +45,19 @@ cd student-api
 npm install
 ```
 
-3. **Edit `.env` file with your configuration:**
+3. **Create environment file:**
+
+```bash
+cp .env.example .env
+```
+
+4. **Edit `.env` file with your configuration:**
 
 - Update `MONGO_URI` with your MongoDB connection string
 - Change `JWT_SECRET` to a secure random string
 - Adjust other settings as needed
 
-4. **Make sure MongoDB is running:**
+5. **Make sure MongoDB is running:**
 
 - Local: Start MongoDB service
 - Cloud: Use MongoDB Atlas connection string
@@ -74,6 +80,8 @@ The server will start on `http://localhost:5000` (or the port specified in .env)
 
 ## API Endpoints
 
+### Authentication Endpoints
+
 ### 1. Register User
 
 **Endpoint:** `POST /api/auth/register`
@@ -82,13 +90,13 @@ The server will start on `http://localhost:5000` (or the port specified in .env)
 
 ```json
 {
-  "name": "name",
-  "family": "family",
+  "name": "John",
+  "family": "Doe",
   "birthdate": "2000-01-15",
   "nationalCode": "1234567890",
   "mobile": "09123456789",
-  "email": "email@example.com",
-  "universityName": "Sajjad University",
+  "email": "john.doe@example.com",
+  "universityName": "Tehran University",
   "studentNumber": "400123456",
   "fieldOfStudy": "Computer Science",
   "educationalLevel": "Bachelor",
@@ -105,10 +113,10 @@ The server will start on `http://localhost:5000` (or the port specified in .env)
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
   "user": {
     "id": "65f8a1b2c3d4e5f6g7h8i9j0",
-    "name": "name",
-    "family": "family",
+    "name": "John",
+    "family": "Doe",
     "nationalCode": "1234567890",
-    "email": "email@example.com"
+    "email": "john.doe@example.com"
   }
 }
 ```
@@ -136,12 +144,175 @@ The server will start on `http://localhost:5000` (or the port specified in .env)
   "ipAddress": "192.168.1.100",
   "user": {
     "id": "65f8a1b2c3d4e5f6g7h8i9j0",
-    "name": "name",
-    "family": "family",
+    "name": "John",
+    "family": "Doe",
     "nationalCode": "1234567890",
-    "email": "email@example.com",
-    "universityName": "Sajjad University",
+    "email": "john.doe@example.com",
+    "universityName": "Tehran University",
     "studentNumber": "400123456"
+  }
+}
+```
+
+### Team Management Endpoints
+
+### 3. Create Team
+
+**Endpoint:** `POST /api/teams/create`
+**Authentication:** Required (Bearer Token)
+
+**Request Headers:**
+
+```
+Authorization: Bearer YOUR_JWT_TOKEN
+```
+
+**Request Body:**
+
+```json
+{
+  "teamName": "Awesome Team",
+  "memberNationalCodes": ["0987654321", "1122334455"]
+}
+```
+
+**Success Response (201):**
+
+```json
+{
+  "success": true,
+  "message": "Team created successfully",
+  "team": {
+    "id": "65f8a1b2c3d4e5f6g7h8i9j0",
+    "teamName": "Awesome Team",
+    "leader": {
+      "id": "65f8a1b2c3d4e5f6g7h8i9j0",
+      "name": "John",
+      "family": "Doe",
+      "nationalCode": "1234567890"
+    },
+    "members": [
+      {
+        "nationalCode": "0987654321",
+        "name": "Jane",
+        "family": "Smith",
+        "joinedAt": "2024-01-15T10:30:00.000Z"
+      }
+    ],
+    "totalMembers": 2,
+    "createdAt": "2024-01-15T10:30:00.000Z"
+  }
+}
+```
+
+### 4. Edit Team
+
+**Endpoint:** `PUT /api/teams/edit`
+**Authentication:** Required (Bearer Token - Leader only)
+
+**Request Headers:**
+
+```
+Authorization: Bearer YOUR_JWT_TOKEN
+```
+
+**Request Body (can include teamName, memberNationalCodes, or both):**
+
+```json
+{
+  "teamName": "New Awesome Team Name",
+  "memberNationalCodes": ["0987654321", "1122334455", "9988776655"]
+}
+```
+
+**Or edit only team name:**
+
+```json
+{
+  "teamName": "New Team Name"
+}
+```
+
+**Or edit only members:**
+
+```json
+{
+  "memberNationalCodes": ["0987654321", "9988776655"]
+}
+```
+
+**Success Response (200):**
+
+```json
+{
+  "success": true,
+  "message": "Team name and members updated successfully",
+  "team": {
+    "id": "65f8a1b2c3d4e5f6g7h8i9j0",
+    "teamName": "New Awesome Team Name",
+    "leader": {
+      "id": "65f8a1b2c3d4e5f6g7h8i9j0",
+      "name": "John",
+      "family": "Doe",
+      "nationalCode": "1234567890"
+    },
+    "members": [
+      {
+        "nationalCode": "0987654321",
+        "name": "Jane",
+        "family": "Smith",
+        "joinedAt": "2024-01-15T11:00:00.000Z"
+      },
+      {
+        "nationalCode": "1122334455",
+        "name": "Bob",
+        "family": "Johnson",
+        "joinedAt": "2024-01-15T11:00:00.000Z"
+      }
+    ],
+    "totalMembers": 3,
+    "updatedAt": "2024-01-15T11:00:00.000Z"
+  }
+}
+```
+
+### 5. Get My Team
+
+**Endpoint:** `GET /api/teams/my-team`
+**Authentication:** Required (Bearer Token)
+
+**Request Headers:**
+
+```
+Authorization: Bearer YOUR_JWT_TOKEN
+```
+
+**Success Response (200):**
+
+```json
+{
+  "success": true,
+  "team": {
+    "id": "65f8a1b2c3d4e5f6g7h8i9j0",
+    "teamName": "Awesome Team",
+    "isLeader": true,
+    "leader": {
+      "id": "65f8a1b2c3d4e5f6g7h8i9j0",
+      "name": "John",
+      "family": "Doe",
+      "nationalCode": "1234567890"
+    },
+    "members": [
+      {
+        "nationalCode": "0987654321",
+        "name": "Jane",
+        "family": "Smith",
+        "joinedAt": "2024-01-15T10:30:00.000Z"
+      }
+    ],
+    "totalMembers": 2,
+    "createdAt": "2024-01-15T10:30:00.000Z",
+    "updatedAt": "2024-01-15T10:30:00.000Z"
   }
 }
 ```
@@ -165,9 +336,14 @@ The server will start on `http://localhost:5000` (or the port specified in .env)
 - ✅ Secure password hashing with bcrypt
 - ✅ JWT-based authentication
 - ✅ Login using national code as username
-- ✅ **IP address tracking for all login attempts**
-- ✅ **Login history stored in separate collection**
-- ✅ **Failed login attempts tracking**
+- ✅ IP address tracking for all login attempts
+- ✅ Login history stored in separate collection
+- ✅ Failed login attempts tracking
+- ✅ **Team management system**
+- ✅ **Leader-based team creation**
+- ✅ **Add/edit team members by national code**
+- ✅ **One team per user restriction**
+- ✅ **Protected routes with JWT middleware**
 - ✅ Duplicate user detection (national code, email, mobile, student number)
 - ✅ Input validation and error handling
 - ✅ MongoDB database integration
@@ -206,6 +382,54 @@ curl -X POST http://localhost:5000/api/auth/login \
   }'
 ```
 
+**Create Team:**
+
+```bash
+curl -X POST http://localhost:5000/api/teams/create \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -d '{
+    "teamName": "Awesome Team",
+    "memberNationalCodes": ["0987654321", "1122334455"]
+  }'
+```
+
+**Edit Team:**
+
+```bash
+# Edit both team name and members
+curl -X PUT http://localhost:5000/api/teams/edit \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -d '{
+    "teamName": "New Team Name",
+    "memberNationalCodes": ["0987654321", "9988776655"]
+  }'
+
+# Edit only team name
+curl -X PUT http://localhost:5000/api/teams/edit \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -d '{
+    "teamName": "New Team Name"
+  }'
+
+# Edit only members
+curl -X PUT http://localhost:5000/api/teams/edit \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -d '{
+    "memberNationalCodes": ["0987654321"]
+  }'
+```
+
+**Get My Team:**
+
+```bash
+curl -X GET http://localhost:5000/api/teams/my-team \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
 ## Security Notes
 
 - Passwords are hashed using bcrypt before storage
@@ -227,6 +451,32 @@ The `LoginHistory` collection stores:
 - **loginStatus**: 'success' or 'failed'
 - **loginTime**: Timestamp of login attempt
 - **createdAt/updatedAt**: Auto-generated timestamps
+
+## Team Collection
+
+The `Team` collection stores:
+
+- **teamName**: Unique team name (3-50 characters)
+- **leader**: Reference to leader's User document (ObjectId)
+- **leaderNationalCode**: Leader's national code
+- **members**: Array of member objects with:
+  - user (ObjectId reference)
+  - nationalCode
+  - name
+  - family
+  - joinedAt (timestamp)
+- **maxMembers**: Maximum number of members (default: 10, max: 50)
+- **isActive**: Team status (boolean)
+- **createdAt/updatedAt**: Auto-generated timestamps
+
+### Team Rules:
+
+- Each user can only be in ONE team (either as leader or member)
+- A user cannot create a team if they're already in one
+- Team names must be unique
+- Leader cannot be added as a member
+- Only the leader can edit team members
+- Members are identified by their national code
 
 ## Dependencies
 

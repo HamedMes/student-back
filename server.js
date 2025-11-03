@@ -2,18 +2,23 @@ const express = require("express");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
+const teamRoutes = require("./routes/teamRoutes");
 const getClientIp = require("./middleware/ipMiddleware");
 
+// Load environment variables
 dotenv.config();
 
+// Connect to database
 connectDB();
 
 const app = express();
 
+// Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(getClientIp);
+app.use(getClientIp); // Extract client IP address
 
+// CORS middleware (optional)
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header(
@@ -24,12 +29,16 @@ app.use((req, res, next) => {
   next();
 });
 
+// Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/teams", teamRoutes);
 
+// Health check route
 app.get("/", (req, res) => {
   res.json({ message: "API is running..." });
 });
 
+// Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({
@@ -39,6 +48,7 @@ app.use((err, req, res, next) => {
   });
 });
 
+// 404 handler
 app.use((req, res) => {
   res.status(404).json({
     success: false,

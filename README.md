@@ -317,6 +317,161 @@ Authorization: Bearer YOUR_JWT_TOKEN
 }
 ```
 
+### User Profile Endpoints
+
+### 6. Get User Profile
+
+**Endpoint:** `GET /api/users/profile`
+**Authentication:** Required (Bearer Token)
+
+**Request Headers:**
+
+```
+Authorization: Bearer YOUR_JWT_TOKEN
+```
+
+**Success Response (200):**
+
+```json
+{
+  "success": true,
+  "user": {
+    "id": "65f8a1b2c3d4e5f6g7h8i9j0",
+    "name": "John",
+    "family": "Doe",
+    "birthdate": "2000-01-15T00:00:00.000Z",
+    "nationalCode": "1234567890",
+    "mobile": "09123456789",
+    "email": "john.doe@example.com",
+    "universityName": "Tehran University",
+    "studentNumber": "400123456",
+    "fieldOfStudy": "Computer Science",
+    "educationalLevel": "Bachelor",
+    "createdAt": "2024-01-15T10:00:00.000Z",
+    "updatedAt": "2024-01-15T10:00:00.000Z"
+  }
+}
+```
+
+### 7. Edit User Profile
+
+**Endpoint:** `PUT /api/users/profile`
+**Authentication:** Required (Bearer Token)
+
+**Request Headers:**
+
+```
+Authorization: Bearer YOUR_JWT_TOKEN
+```
+
+**Request Body (all fields optional, include only what you want to update):**
+
+```json
+{
+  "name": "Jonathan",
+  "family": "Doe",
+  "birthdate": "2000-01-15",
+  "mobile": "09123456789",
+  "email": "newemail@example.com",
+  "universityName": "Sharif University",
+  "studentNumber": "400123456",
+  "fieldOfStudy": "Software Engineering",
+  "educationalLevel": "Master",
+  "currentPassword": "oldPassword123",
+  "password": "newPassword456"
+}
+```
+
+**Note:** To change password, both `currentPassword` and `password` are required.
+
+**Success Response (200):**
+
+```json
+{
+  "success": true,
+  "message": "Profile updated successfully (name, email, educational level)",
+  "user": {
+    "id": "65f8a1b2c3d4e5f6g7h8i9j0",
+    "name": "Jonathan",
+    "family": "Doe",
+    "birthdate": "2000-01-15T00:00:00.000Z",
+    "nationalCode": "1234567890",
+    "mobile": "09123456789",
+    "email": "newemail@example.com",
+    "universityName": "Sharif University",
+    "studentNumber": "400123456",
+    "fieldOfStudy": "Software Engineering",
+    "educationalLevel": "Master",
+    "updatedAt": "2024-01-15T12:00:00.000Z"
+  }
+}
+```
+
+### Dashboard Endpoint
+
+### 8. Get Dashboard
+
+**Endpoint:** `GET /api/dashboard`
+**Authentication:** Required (Bearer Token)
+
+**Request Headers:**
+
+```
+Authorization: Bearer YOUR_JWT_TOKEN
+```
+
+**Success Response (200):**
+
+```json
+{
+  "success": true,
+  "dashboard": {
+    "user": {
+      "id": "65f8a1b2c3d4e5f6g7h8i9j0",
+      "name": "John",
+      "family": "Doe"
+    },
+    "daysSinceRegistration": 45,
+    "team": {
+      "teamName": "Awesome Team",
+      "isLeader": true,
+      "members": [
+        {
+          "id": "65f8a1b2c3d4e5f6g7h8i9j1",
+          "name": "Jane",
+          "family": "Smith",
+          "universityName": "Tehran University"
+        },
+        {
+          "id": "65f8a1b2c3d4e5f6g7h8i9j2",
+          "name": "Bob",
+          "family": "Johnson",
+          "universityName": "Sharif University"
+        }
+      ],
+      "totalMembers": 3
+    }
+  }
+}
+```
+
+**If user has no team:**
+
+```json
+{
+  "success": true,
+  "dashboard": {
+    "user": {
+      "id": "65f8a1b2c3d4e5f6g7h8i9j0",
+      "name": "John",
+      "family": "Doe"
+    },
+    "daysSinceRegistration": 45,
+    "team": null
+  }
+}
+```
+
 ## Field Validations
 
 - **name, family:** Required, trimmed
@@ -428,6 +583,45 @@ curl -X PUT http://localhost:5000/api/teams/edit \
 ```bash
 curl -X GET http://localhost:5000/api/teams/my-team \
   -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+**Get Dashboard:**
+
+```bash
+curl -X GET http://localhost:5000/api/dashboard \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+**Get User Profile:**
+
+```bash
+curl -X GET http://localhost:5000/api/users/profile \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+**Edit User Profile:**
+
+```bash
+curl -X PUT http://localhost:5000/api/users/profile \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -d '{
+    "name": "Jonathan",
+    "email": "newemail@example.com",
+    "universityName": "Sharif University"
+  }'
+```
+
+**Change Password:**
+
+```bash
+curl -X PUT http://localhost:5000/api/users/profile \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -d '{
+    "currentPassword": "oldPassword123",
+    "password": "newPassword456"
+  }'
 ```
 
 ## Security Notes

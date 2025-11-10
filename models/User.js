@@ -55,7 +55,7 @@ const userSchema = new mongoose.Schema(
     educationalLevel: {
       type: String,
       required: [true, "Educational level is required"],
-      enum: ["Associate", "Bachelor", "Master", "PhD"],
+      enum: ["student", "bachelor", "master", "phD"],
       trim: true,
     },
     password: {
